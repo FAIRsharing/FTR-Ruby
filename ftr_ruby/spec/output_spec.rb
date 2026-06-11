@@ -32,6 +32,75 @@ RSpec.describe FtrRuby::Output do
     it "defaults score to indeterminate" do
       expect(output.score).to eq("indeterminate")
     end
+
+    describe "URL component normalization" do
+      context "when protocol includes the scheme suffix (e.g. 'https://')" do
+        let(:meta) { super().merge(protocol: "https://") }
+        it { expect(output.protocol).to eq("https") }
+      end
+
+      context "when protocol is uppercased (e.g. 'HTTPS')" do
+        let(:meta) { super().merge(protocol: "HTTPS") }
+        it { expect(output.protocol).to eq("https") }
+      end
+
+      context "when host includes a scheme prefix (e.g. 'https://tests.ostrails.eu')" do
+        let(:meta) { super().merge(host: "https://tests.ostrails.eu") }
+        it { expect(output.host).to eq("tests.ostrails.eu") }
+      end
+
+      context "when host includes a port number (e.g. 'tests.ostrails.eu:8080')" do
+        let(:meta) { super().merge(host: "tests.ostrails.eu:8080") }
+        it "preserves the port in host" do
+          expect(output.host).to eq("tests.ostrails.eu:8080")
+        end
+      end
+
+      context "when basePath has leading and trailing slashes (e.g. '/api/')" do
+        let(:meta) { super().merge(basePath: "/api/") }
+        it { expect(output.basePath).to eq("api") }
+      end
+
+      context "when basePath has internal slashes (e.g. '/path/to/test')" do
+        let(:meta) { super().merge(basePath: "/path/to/test") }
+
+        it "strips only the leading slash, preserving internal separators" do
+          expect(output.basePath).to eq("path/to/test")
+        end
+
+        it "assembles softwareid without corrupting the path" do
+          expect(output.softwareid).to eq("https://tests.ostrails.eu/path/to/test/ftr-test-001")
+        end
+      end
+
+      context "when testid has a leading slash (e.g. '/ftr-test-001')" do
+        let(:meta) { super().merge(testid: "/ftr-test-001") }
+        it "strips the leading slash in softwareid" do
+          expect(output.softwareid).to eq("https://tests.ostrails.eu/api/ftr-test-001")
+        end
+      end
+
+      context "when basePath is empty" do
+        let(:meta) { super().merge(basePath: "") }
+        it "builds softwareid without a double slash" do
+          expect(output.softwareid).to eq("https://tests.ostrails.eu/ftr-test-001")
+        end
+      end
+
+      context "when all inputs are messy (mixed case, extra slashes, scheme prefixes)" do
+        let(:meta) do
+          super().merge(
+            protocol: "HTTPS://",
+            host: "https://tests.ostrails.eu/",
+            basePath: "/path/to/test/",
+            testid: "/ftr-test-001"
+          )
+        end
+        it "assembles a clean softwareid" do
+          expect(output.softwareid).to eq("https://tests.ostrails.eu/path/to/test/ftr-test-001")
+        end
+      end
+    end
   end
 
   describe "#createEvaluationResponse" do

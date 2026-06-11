@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.1.14] - 2026-06-11
+
+### Added
+- RSpec tests for all URL normalization cases in `Output#initialize`: scheme suffix in `protocol`, uppercase `protocol`, scheme prefix in `host`, port preservation in `host`, leading/trailing slashes in `basePath`, internal slashes in `basePath`, leading slash in `testid`, empty `basePath`, and a combined "all messy inputs" scenario
+
 ## [0.1.13] - 2026-06-11
 
 ### Fixed
