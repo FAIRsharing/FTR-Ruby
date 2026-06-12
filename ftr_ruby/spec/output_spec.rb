@@ -141,6 +141,32 @@ RSpec.describe FtrRuby::Output do
       expect(jsonld).to include(meta[:testname])
     end
 
+    context "when summary is the placeholder value" do
+      before do
+        output.summary = "Summary"
+        output.comments << "Final assessment comment"
+      end
+
+      it "builds the summary from the latest comment" do
+        expect(jsonld).to include("Summary of test results: Final assessment comment")
+      end
+    end
+
+    context "when serializing the tested GUID fails" do
+      before do
+        allow(output).to receive(:triplify).and_wrap_original do |method, *args, **kwargs|
+          raise StandardError, "bad tested GUID" if args[1] == RDF::Vocab::DC.identifier && args[2] == tested_guid
+
+          method.call(*args, **kwargs)
+        end
+      end
+
+      it "records a fallback assessment target and marks the output as failed" do
+        expect(jsonld).to include("not a URI")
+        expect(output.score).to eq("fail")
+      end
+    end
+
     context "when endpoint metadata is provided" do
       let(:meta) do
         super().merge(
@@ -185,6 +211,17 @@ RSpec.describe FtrRuby::Output do
     it "clears the comments class variable" do
       FtrRuby::Output.clear_comments
       expect(FtrRuby::Output.comments).to eq([])
+    end
+  end
+
+  describe "#add_newline_to_comments" do
+    it "adds a trailing newline to comments that do not already have one" do
+      output.comments << "first comment"
+      output.comments << "second comment\n"
+
+      output.add_newline_to_comments
+
+      expect(output.comments).to eq(["first comment\n", "second comment\n"])
     end
   end
 end
