@@ -87,17 +87,25 @@ module FtrRuby
       @protocol = meta[:protocol]
       @host = meta[:host]
       @basePath = meta[:basePath]
-      cleanhost = @host.gsub("/", "")
-      cleanpath = @basePath.gsub("/", "") # TODO: this needs to check only leading and trailing!  NOt internal...
-      endpointpath = "assess/test"
-      @end_url = "#{protocol}://#{cleanhost}/#{cleanpath}/#{endpointpath}/#{testid}"
-      @end_desc = "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}/api"
+
       @identifier = "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}"
       @definedby =  meta[:definedby] || @identifier
       @landingpage = meta[:landingPage] || @identifier
+      cleanhost = @host.gsub("/", "")
+      cleanpath = @basePath.gsub("/", "") # TODO: this needs to check only leading and trailing!  Not internal...
+      endpointpath = "assess/test"
+
+      # The two overrides below are needed for FAIRsharing tests to ensure that the proper endpoint is shown in
+      # test output. Without this, endpoint URLs and descriptions pointing to non-existent URLs are generated.
+
+      # Override the endpoint URL if provided in the meta data.
+      @end_url = meta[:endpoint_url] || "#{protocol}://#{cleanhost}/#{cleanpath}/#{endpointpath}/#{testid}"
+
+      # Override the endpoint description if provided in the meta data.
+      @end_desc = meta[:endpoint_description] || "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}/api"
 
       unless @testid && @testname && @description && @creator && @end_desc && @end_url && @protocol && @host && @basePath
-        warn "this record is invalid - it is missing one of  testid testname description creator  end_desc end_url protocol  host  basePath"
+        warn 'this record is invalid - it is missing one of;  testid, testname, description, creator, end_desc, end_url, protocol, host, basePath.'
       end
     end
 
