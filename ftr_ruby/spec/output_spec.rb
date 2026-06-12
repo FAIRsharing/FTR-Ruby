@@ -37,8 +37,12 @@ RSpec.describe FtrRuby::Output do
         )
       end
 
-      it "uses endpoint_url as the test software id" do
-        expect(output.softwareid).to eq("https://fair-tests.fairsharing.org/test/ft_f1_m_metadata_id_unique")
+      it "keeps the computed test software id" do
+        expect(output.softwareid).to eq("https://tests.ostrails.eu/api/ftr-test-001")
+      end
+
+      it "uses endpoint_url as the DCAT endpoint URL" do
+        expect(output.endpoint_url).to eq("https://fair-tests.fairsharing.org/test/ft_f1_m_metadata_id_unique")
       end
 
       it "uses endpoint_description as the API description" do
@@ -148,6 +152,10 @@ RSpec.describe FtrRuby::Output do
       it "includes the provided endpoint URL and endpoint description" do
         expect(jsonld).to include(meta[:endpoint_url])
         expect(jsonld).to include(meta[:endpoint_description])
+      end
+
+      it "keeps the computed identifier value" do
+        expect(jsonld).to include("https://tests.ostrails.eu/api/ftr-test-001")
       end
     end
 

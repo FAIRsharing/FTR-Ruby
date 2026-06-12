@@ -23,7 +23,8 @@ module FtrRuby
     include RDF
 
     attr_accessor :score, :testedGUID, :testid, :uniqueid, :name, :description, :license, :dt, :metric, :softwareid,
-                  :version, :summary, :completeness, :comments, :guidance, :creator, :protocol, :host, :basePath, :api
+                  :version, :summary, :completeness, :comments, :guidance, :creator, :protocol, :host, :basePath, :api,
+                  :endpoint_url
 
     OPUTPUT_VERSION = "1.1.1"
 
@@ -52,8 +53,8 @@ module FtrRuby
       @host       = meta[:host].to_s.sub(%r{\A[a-zA-Z][a-zA-Z0-9+\-.]*://}, "").split("/").first.to_s.strip
       @basePath   = meta[:basePath].to_s.sub(%r{\A[a-zA-Z][a-zA-Z0-9+\-.]*://[^/]*/}, "").gsub(%r{\A/+|/+\z}, "")
       testid      = meta[:testid].to_s.sub(%r{\A/+}, "")
-      default_softwareid = "#{@protocol}://#{@host}/#{[@basePath, testid].reject(&:empty?).join("/")}"
-      @softwareid = meta[:endpoint_url] || default_softwareid
+      @softwareid = "#{@protocol}://#{@host}/#{[@basePath, testid].reject(&:empty?).join("/")}"
+      @endpoint_url = meta[:endpoint_url] || @softwareid
       @api = meta[:endpoint_description] || "#{@softwareid}/api"
     end
 
@@ -115,7 +116,7 @@ module FtrRuby
       triplify(softwareid, dct.title, "#{name}", g)
       triplify(softwareid, dct.description, description, g)
       triplify(softwareid, dcat.endpointDescription, api, g) # returns yaml
-      triplify(softwareid, dcat.endpointURL, softwareid, g) # POST to execute
+      triplify(softwareid, dcat.endpointURL, endpoint_url, g) # POST to execute
       triplify(softwareid, "http://www.w3.org/ns/dcat#version", "#{version} OutputVersion:#{OPUTPUT_VERSION}", g) # dcat namespace in library has no version - dcat 2 not 3
       triplify(softwareid, dct.license, "https://github.com/wilkinsonlab/FAIR-Core-Tests/blob/main/LICENSE", g)
       triplify(softwareid, sio["SIO_000233"], metric, g) # implementation of
