@@ -29,6 +29,23 @@ RSpec.describe FtrRuby::Output do
       expect(output.softwareid).to include("https://tests.ostrails.eu/api/ftr-test-001")
     end
 
+    context "when endpoint metadata is provided" do
+      let(:meta) do
+        super().merge(
+          endpoint_url: "https://fair-tests.fairsharing.org/test/ft_f1_m_metadata_id_unique",
+          endpoint_description: "https://fair-tests.fairsharing.org/test_descriptions/ft_f1_m_metadata_id_unique/api"
+        )
+      end
+
+      it "uses endpoint_url as the test software id" do
+        expect(output.softwareid).to eq("https://fair-tests.fairsharing.org/test/ft_f1_m_metadata_id_unique")
+      end
+
+      it "uses endpoint_description as the API description" do
+        expect(output.api).to eq("https://fair-tests.fairsharing.org/test_descriptions/ft_f1_m_metadata_id_unique/api")
+      end
+    end
+
     it "defaults score to indeterminate" do
       expect(output.score).to eq("indeterminate")
     end
@@ -118,6 +135,20 @@ RSpec.describe FtrRuby::Output do
 
     it "includes the test name in the output" do
       expect(jsonld).to include(meta[:testname])
+    end
+
+    context "when endpoint metadata is provided" do
+      let(:meta) do
+        super().merge(
+          endpoint_url: "https://fair-tests.fairsharing.org/test/ft_f1_m_metadata_id_unique",
+          endpoint_description: "https://fair-tests.fairsharing.org/test_descriptions/ft_f1_m_metadata_id_unique/api"
+        )
+      end
+
+      it "includes the provided endpoint URL and endpoint description" do
+        expect(jsonld).to include(meta[:endpoint_url])
+        expect(jsonld).to include(meta[:endpoint_description])
+      end
     end
 
     context "when score is pass" do

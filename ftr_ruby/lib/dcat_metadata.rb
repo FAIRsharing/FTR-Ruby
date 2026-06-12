@@ -88,12 +88,12 @@ module FtrRuby
       @host = meta[:host]
       @basePath = meta[:basePath]
 
-      @identifier = "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}"
-      @definedby =  meta[:definedby] || @identifier
-      @landingpage = meta[:landingPage] || @identifier
       cleanhost = @host.gsub("/", "")
       cleanpath = @basePath.gsub("/", "") # TODO: this needs to check only leading and trailing!  Not internal...
       endpointpath = "assess/test"
+      @identifier = "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}"
+      @definedby =  meta[:definedby] || @identifier
+      @landingpage = meta[:landingPage] || @identifier
 
       # The two overrides below are needed for FAIRsharing tests to ensure that the proper endpoint is shown in
       # test output. Without this, endpoint URLs and descriptions pointing to non-existent URLs are generated.

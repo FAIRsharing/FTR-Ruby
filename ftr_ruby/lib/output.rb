@@ -52,8 +52,9 @@ module FtrRuby
       @host       = meta[:host].to_s.sub(%r{\A[a-zA-Z][a-zA-Z0-9+\-.]*://}, "").split("/").first.to_s.strip
       @basePath   = meta[:basePath].to_s.sub(%r{\A[a-zA-Z][a-zA-Z0-9+\-.]*://[^/]*/}, "").gsub(%r{\A/+|/+\z}, "")
       testid      = meta[:testid].to_s.sub(%r{\A/+}, "")
-      @softwareid = "#{@protocol}://#{@host}/#{[@basePath, testid].reject(&:empty?).join("/")}"
-      @api = "#{@softwareid}/api"
+      default_softwareid = "#{@protocol}://#{@host}/#{[@basePath, testid].reject(&:empty?).join("/")}"
+      @softwareid = meta[:endpoint_url] || default_softwareid
+      @api = meta[:endpoint_description] || "#{@softwareid}/api"
     end
 
     ##

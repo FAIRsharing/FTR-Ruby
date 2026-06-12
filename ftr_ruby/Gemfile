@@ -31,6 +31,8 @@ gem "shotgun"
 gem "triple_easy", "~> 0.1.0"
 gem "uri", "~> 1.1"
 gem "xml-simple", "~> 1.1.8"
+gem "csv"
+gem "irb"
 
 group :development, :test do
   gem "dotenv", "~> 2.8" # Add dotenv for local environment variables
