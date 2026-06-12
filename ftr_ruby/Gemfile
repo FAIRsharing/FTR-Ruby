@@ -32,7 +32,6 @@ gem "triple_easy", "~> 0.1.0"
 gem "uri", "~> 1.1"
 gem "xml-simple", "~> 1.1.8"
 gem "csv"
-gem "irb"
 
 group :development, :test do
   gem "dotenv", "~> 2.8" # Add dotenv for local environment variables
@@ -40,6 +39,7 @@ group :development, :test do
 end
 
 group :test do
+  gem "coveralls_reborn", "~> 0.29.0", require: false
   gem "rack-test", "~> 2.1.0"
   gem "rdf"
   gem "rspec", "~> 3.13.1"
