@@ -45,7 +45,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "jsonpath", "~> 1.1"
   spec.add_runtime_dependency "linkeddata", "~> 3.1"
   spec.add_runtime_dependency "multi_json", "~> 1.5"
-  spec.add_runtime_dependency "nokogiri", "1.18.10"
+  spec.add_runtime_dependency "nokogiri", "1.19.3"
   spec.add_runtime_dependency "parseconfig", "~> 1.1"
   spec.add_runtime_dependency "rdf-raptor", "~> 3.2"
   spec.add_runtime_dependency "rdf-vocab"

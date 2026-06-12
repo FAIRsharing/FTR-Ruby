@@ -18,7 +18,7 @@ gem "json-canonicalization", "~> 1.0.0"
 gem "jsonpath", "~> 1.1"
 gem "linkeddata", "~> 3.1"
 gem "multi_json", "1.15.0" # exact version to force it
-gem "nokogiri", "1.18.10" # exact version from your lockfile, or "~> 1.18.8"
+gem "nokogiri", "~> 1.19.3" # exact version from your lockfile, or "~> 1.18.8"
 gem "parseconfig", "~> 1.1.2"
 gem "rdf-raptor", "~> 3.2.0"
 gem "rdf-vocab"
