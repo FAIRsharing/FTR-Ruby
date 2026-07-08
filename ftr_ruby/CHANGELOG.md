@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.1.15] - 2026-07-08
+
+### Changed
+
+- endpoint_url, endpoint_description,and identifier are accepted as parameters sent to dcat builder, but will still be auto-generated if not supplied
+
 ## [0.1.14] - 2026-06-11
 
 ### Added
