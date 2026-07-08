@@ -57,6 +57,9 @@ module FtrRuby
     # @option meta [String] :protocol         Protocol (http/https)
     # @option meta [String] :host             Hostname of the test service
     # @option meta [String] :basePath         Base path of the test service
+    # @option meta [String] :endpoint_url     URL of the test service (will be auto-generated if not supplied).  Note that endpoint path is defined by the FTR spec to be assess/test, but this is not enforced
+    # @option meta [String] :endpoint_desc    URL to the OpenAPI docs (will be auto-generated if not supplied)
+    # @option meta [String] :identifier       Identifier of test (will be auto-generated from host, protocol, basepath, testid if not supplied)
     #
     # @note Several fields have sensible defaults (e.g. +dctype+, +supportedby+, +applicationarea+).
     #       The +end_url+ and +identifier+ are automatically constructed from +protocol+, +host+,
@@ -72,8 +75,6 @@ module FtrRuby
       @keywords = meta[:keywords] || []
       @keywords = [@keywords] unless @keywords.is_a? Array
       @creator = meta[:creator]
-      @end_desc = meta[:end_desc]
-      @end_url = meta[:end_url]
       @dctype = meta[:dctype] || "http://edamontology.org/operation_2428"
       @supportedby = meta[:supportedby] || ["https://tools.ostrails.eu/champion"]
       @applicationarea = meta[:applicationarea] || ["http://www.fairsharing.org/ontology/subject/SRAO_0000401"]
@@ -87,22 +88,26 @@ module FtrRuby
       @protocol = meta[:protocol]
       @host = meta[:host]
       @basePath = meta[:basePath]
-      @identifier = "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}"
       @definedby =  meta[:definedby] || @identifier
       @landingpage = meta[:landingPage] || @identifier
 
-      cleanhost = @host.gsub("/", "")
-      cleanpath = @basePath.gsub("/", "")
+      cleanhost = @host.gsub(%r{/$}, "")
+      cleanpath = @basePath.gsub(%r{/$}, "")
       endpointpath = "assess/test"
 
       # The two overrides below are needed for FAIRsharing tests to ensure that the proper endpoint is shown in
       # test output. Without this, endpoint URLs and descriptions pointing to non-existent URLs are generated.
+      @end_desc = meta[:end_desc]
+      @end_url = meta[:end_url]
 
       # Override the endpoint URL if provided in the meta data.
       @end_url = meta[:endpoint_url] || "#{protocol}://#{cleanhost}/#{cleanpath}/#{endpointpath}/#{testid}"
 
       # Override the endpoint description if provided in the meta data.
       @end_desc = meta[:endpoint_description] || "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}/api"
+
+      # Override the endpoint description if provided in the meta data.
+      @identifier =  meta[:identifier] || "#{protocol}://#{cleanhost}/#{cleanpath}/#{testid}"
 
       unless @testid && @testname && @description && @creator && @end_desc && @end_url && @protocol && @host && @basePath
         warn "this record is invalid - it is missing one of  testid testname description creator  end_desc end_url protocol  host  basePath"
